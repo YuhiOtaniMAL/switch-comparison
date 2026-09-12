@@ -70,3 +70,8 @@ menu that `npm start` prints.
 - Token refresh on expiration (bonus) is not implemented — the
   backend fetches its token once and reuses it for the lifetime of
   the process.
+
+## References
+
+- 42 API documentation (requires a logged-in 42 intra session): https://api.intra.42.fr/apidoc
+- 42 API getting started guide: https://api.intra.42.fr/apidoc/guides/getting_started

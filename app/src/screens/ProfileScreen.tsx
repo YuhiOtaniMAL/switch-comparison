@@ -1,12 +1,4 @@
-import {
-  ScrollView,
-  View,
-  Text,
-  Image,
-  StyleSheet,
-  StyleProp,
-  TextStyle,
-} from "react-native";
+import { ScrollView, View, Text, Image, StyleSheet } from "react-native";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "../types";
 
@@ -14,20 +6,20 @@ type Props = NativeStackScreenProps<RootStackParamList, "Profile">;
 
 export default function ProfileScreen({ route }: Props) {
   const { user } = route.params;
-  // Pick the main cursus (e.g. "42cursus") rather than a piscine; fall
-  // back to the last entry if none is marked "main".
+
   const cursus =
     user.cursus_users.find((c) => c.cursus.kind === "main") ??
-    user.cursus_users[user.cursus_users.length - 1];
+    user.cursus_users.find((c) => c.cursus.kind === "piscine") ??
+    user.cursus_users[0];
   const finishedProjects = user.projects_users.filter(
-    (p) => p.status === "finished"
+    (p) => p.status === "finished",
   );
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      {user.image?.link ? (
+      {user.image?.link && (
         <Image source={{ uri: user.image.link }} style={styles.avatar} />
-      ) : null}
+      )}
 
       <Text style={styles.login}>{user.login}</Text>
 
@@ -79,7 +71,6 @@ export default function ProfileScreen({ route }: Props) {
               key={p.id}
               label={p.project.name}
               value={p["validated?"] ? "Passed" : "Failed"}
-              valueStyle={p["validated?"] ? styles.passed : styles.failed}
             />
           ))
         ) : (
@@ -90,19 +81,11 @@ export default function ProfileScreen({ route }: Props) {
   );
 }
 
-function DetailRow({
-  label,
-  value,
-  valueStyle,
-}: {
-  label: string;
-  value: string;
-  valueStyle?: StyleProp<TextStyle>;
-}) {
+function DetailRow({ label, value }: { label: string; value: string }) {
   return (
     <View style={styles.detailRow}>
       <Text style={styles.detailLabel}>{label}</Text>
-      <Text style={[styles.detailValue, valueStyle]}>{value}</Text>
+      <Text style={styles.detailValue}>{value}</Text>
     </View>
   );
 }
@@ -122,7 +105,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     paddingVertical: 6,
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomWidth: 1,
     borderBottomColor: "#ccc",
   },
   detailLabel: { fontWeight: "600" },
@@ -142,6 +125,4 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   barFill: { height: 6, backgroundColor: "#3498db" },
-  passed: { color: "#27ae60", fontWeight: "600" },
-  failed: { color: "#c0392b", fontWeight: "600" },
 });
