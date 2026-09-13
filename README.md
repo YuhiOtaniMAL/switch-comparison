@@ -65,6 +65,48 @@ npm start
 Then open the app in Expo Go (or a simulator) from the QR code /
 menu that `npm start` prints.
 
+### 4. Connecting from a phone on a different network (optional)
+
+If your phone and computer are not on the same network (or the same
+Wi-Fi blocks device-to-device traffic, e.g. campus/eduroam client
+isolation), expose both the backend and the Expo dev server through
+a tunnel instead of a LAN IP.
+
+**Download ngrok** (not an npm package, so `npm install` won't fetch
+it — download the binary once per machine):
+
+```sh
+cd switch-comparison
+curl -fsSL https://bin.ngrok.com/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz | tar -xz
+./ngrok config add-authtoken <your ngrok authtoken>
+```
+
+Get a free account and authtoken at https://dashboard.ngrok.com/signup.
+A free static domain can be reserved at
+https://dashboard.ngrok.com/domains so the URL doesn't change every
+time the tunnel restarts.
+
+Add the domain to `backend/.env`:
+
+```
+NGROK_DOMAIN=your-fixed-domain.ngrok-free.dev
+```
+
+Then, instead of `npm run dev`, run:
+
+```sh
+cd backend
+npm run tunnel   # starts the backend AND the ngrok tunnel together
+```
+
+Set `app/.env`'s `EXPO_PUBLIC_API_BASE_URL` to `https://your-fixed-domain.ngrok-free.dev`,
+then start Expo with:
+
+```sh
+cd app
+npm run tunnel   # expo start --tunnel
+```
+
 ## Notes
 
 - Token refresh on expiration (bonus) is not implemented — the
